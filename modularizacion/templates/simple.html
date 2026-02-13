@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Segunda plantilla con Django(Repaso)</title>
+</head>
+<body>
+    <h1>Segunda plantilla con Django</h1>
+    <p>Esta es una página de ejemplo renderizada desde una vista de Django.</p>
+
+    <h2>Nombre: {{ name }}</h2>
+
+    <ul>
+        {% for movie in movies %}
+            <li>{{ movie.title }} ({{ movie.year }})</li>
+        {% endfor %}
+    </ul>
+
+</body>
+</html>

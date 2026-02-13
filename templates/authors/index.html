@@ -1,0 +1,37 @@
+
+{% extends 'layouts/base.html' %}
+{% load static %}
+
+{% block title %}Lista de Autores{% endblock %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'css/table.css' %}">
+{% endblock %}
+
+{% block content %}
+    <h1>Lista de Autores ({{ authors|length }})</h1>
+    {% if authors %}
+        <table>
+            <thead>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Acciones</th>
+            </thead>
+            <tbody>
+                {% for author in authors %}
+                    <tr>
+                        <td>{{ author.id }}</td>
+                        <td>{{ author.name }}</td>
+                        <td>{{ author.email }}</td>
+                        <td><a href="{% url 'authors.show' author.id %}">Ver Detalles</a></td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No hay autores disponibles.</p>
+    {% endif %}
+    
+
+{% endblock %}

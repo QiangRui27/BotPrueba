@@ -1,0 +1,24 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}Página Simple que hereda de base{% endblock %}
+
+{% block content %}
+    <h1>Plantilla Django</h1>
+    <h2>Hola, {{ nombre }}!</h2>
+
+    {% comment %} 
+    Mostrar las películas favoritas 
+    {% endcomment %}
+
+    <h3>Películas preferidas ({{ movies | length }}):</h3>
+    {% for movie in movies %}
+    <ul>
+            <li class="destacado">{{ movie.title }} ({{ movie.year }})</li>
+            <li>Director: {{ movie.director }}</li>
+    </ul>
+    {% endfor %}
+
+    {% comment %} 
+    Fin de la lista de películas 
+    {% endcomment %}
+{% endblock %}

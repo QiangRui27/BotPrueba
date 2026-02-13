@@ -1,0 +1,83 @@
+/* =====================
+   Tabla de Autores
+===================== */
+
+/* Título */
+h1 {
+    margin-bottom: 25px;
+    color: #2c3e50;
+    font-size: 1.8rem;
+}
+
+/* Tabla */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #ffffff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+}
+
+/* Cabecera */
+thead {
+    background-color: #34495e;
+    color: #ffffff;
+}
+
+thead th {
+    padding: 14px 16px;
+    text-align: left;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+/* Filas */
+tbody tr {
+    border-bottom: 1px solid #e6e6e6;
+    transition: background-color 0.2s ease;
+}
+
+tbody tr:hover {
+    background-color: #f4f9ff;
+}
+
+/* Celdas */
+td {
+    padding: 14px 16px;
+    color: #333;
+}
+
+/* Email */
+td:nth-child(3) {
+    color: #555;
+    font-style: italic;
+}
+
+/* Acciones */
+td:last-child {
+    text-align: center;
+}
+
+/* Botón */
+td a {
+    background-color: #1abc9c;
+    color: #ffffff;
+    padding: 7px 14px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    text-decoration: none;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+td a:hover {
+    background-color: #16a085;
+    transform: translateY(-1px);
+}
+
+/* Mensaje vacío */
+p {
+    margin-top: 20px;
+    font-size: 1.1rem;
+    color: #777;
+}

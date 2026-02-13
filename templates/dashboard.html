@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard Leads</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+/* ===============================
+   VARIABLES
+================================ */
+:root {
+    --bg-main: linear-gradient(135deg, #020617, #020617);
+    --bg-card: linear-gradient(180deg, #020617, #020617);
+    --border-soft: rgba(148, 163, 184, 0.15);
+    --text-main: #e5e7eb;
+    --text-muted: #94a3b8;
+    --primary: #3b82f6;
+    --primary-hover: #2563eb;
+    --danger: #ef4444;
+    --danger-hover: #dc2626;
+    --radius-lg: 16px;
+    --radius-md: 12px;
+}
+
+/* ===============================
+   BASE
+================================ */
+body {
+    min-height: 100vh;
+    background: radial-gradient(circle at top, #1c285e, #020617);
+    color: var(--text-main);
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    -webkit-font-smoothing: antialiased;
+}
+
+h1, h5 {
+    color: #f8fafc;
+    font-weight: 600;
+}
+
+h1 {
+    letter-spacing: -0.02em;
+}
+
+/* ===============================
+   CARDS
+================================ */
+.card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-soft);
+    border-radius: var(--radius-lg);
+    box-shadow:
+        0 10px 30px rgba(0,0,0,.45),
+        inset 0 1px 0 rgba(255,255,255,.03);
+    transition: transform .25s ease, box-shadow .25s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow:
+        0 20px 45px rgba(0,0,0,.55),
+        inset 0 1px 0 rgba(255,255,255,.04);
+}
+
+/* ===============================
+   MÉTRICAS
+================================ */
+.metric {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #3b82f6;
+}
+
+/* ===============================
+   TABLA
+================================ */
+.table {
+    margin-top: 1rem;
+    border-collapse: separate;
+    border-spacing: 0 10px;
+}
+
+.table thead th {
+    color: var(--muted);
+    font-weight: 600;
+    border: none;
+}
+
+.table tbody tr {
+    background: rgba(2, 6, 23, 0.6);
+    transition: all .25s ease;
+}
+
+.table tbody tr:hover {
+    transform: scale(1.01);
+    background: rgba(2, 6, 23, 0.9);
+}
+
+.table td {
+    border: none;
+    padding: 1rem;
+}
+
+.table td:first-child {
+    border-radius: 12px 0 0 12px;
+}
+
+.table td:last-child {
+    border-radius: 0 12px 12px 0;
+}
+
+/* ===============================
+   BOTONES
+================================ */
+.btn {
+    border-radius: 10px;
+    font-weight: 500;
+    transition: all .2s ease;
+}
+
+.btn-edit {
+    background: linear-gradient(135deg, var(--primary), #60a5fa);
+    border: none;
+    color: #fff;
+}
+
+.btn-edit:hover {
+    background: linear-gradient(135deg, var(--primary-hover), var(--primary));
+    transform: translateY(-1px);
+}
+
+.btn-delete {
+    background: linear-gradient(135deg, var(--danger), #f87171);
+    border: none;
+    color: #fff;
+}
+
+.btn-delete:hover {
+    background: linear-gradient(135deg, var(--danger-hover), var(--danger));
+    transform: translateY(-1px);
+}
+
+.btn-sm {
+    padding: .35rem .55rem;
+}
+
+/* ===============================
+   INPUTS / FORM
+================================ */
+.form-control {
+    background: rgba(2,6,23,.85);
+    border: 1px solid var(--border-soft);
+    color: var(--text-main);
+    border-radius: var(--radius-md);
+    padding: .6rem .75rem;
+    transition: border-color .2s ease, box-shadow .2s ease, background .2s ease;
+}
+
+.form-control::placeholder {
+    color: var(--text-muted);
+}
+
+.form-control:focus {
+    background: rgba(2,6,23,.95);
+    color: var(--text-main);
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(59,130,246,.25);
+}
+
+/* ===============================
+   MODAL
+================================ */
+.modal-content {
+    background: linear-gradient(180deg, #020617, #020617);
+    border: 1px solid var(--border-soft);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 25px 60px rgba(0,0,0,.65);
+}
+
+/* ===============================
+   SCROLLBAR (nice touch)
+================================ */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #020617;
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #3b82f6, #2563eb);
+    border-radius: 8px;
+}
+
+/* ===============================
+   TOAST NOTIFICATION
+================================ */
+.toast-custom {
+    position: fixed;
+    top: 24px;
+    right: 24px;
+    padding: 14px 18px;
+    background: linear-gradient(135deg, #3b82f6, #60a5fa);
+    color: #fff;
+    border-radius: 14px;
+    font-weight: 500;
+    box-shadow: 0 20px 45px rgba(0,0,0,.45);
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: all .3s ease;
+    z-index: 9999;
+}
+
+.toast-custom.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.toast-custom.error {
+    background: linear-gradient(135deg, #ef4444, #f87171);
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container my-5">
+
+    <h1 class="mb-4">📊 Dashboard de Leads</h1>
+
+    <!-- MÉTRICAS -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card p-4">
+                <h5>Total de Leads</h5>
+                <div class="metric">{{ total_leads }}</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TABLA CRUD -->
+    <div class="card p-4">
+        <h5 class="mb-3">Últimos Leads</h5>
+
+        <table class="table table-dark table-hover align-middle">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Email</th>
+                    <th>Teléfono</th>
+                    <th>Dirección</th>
+                    <th class="text-end">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for lead in ultimos_leads %}
+                <tr>
+                    <td>{{ lead.nombre }} {{ lead.apellidos }}</td>
+                    <td>{{ lead.email }}</td>
+                    <td>{{ lead.telefono }}</td>
+                    <td>{{ lead.direccion }}</td>
+                    <td class="text-end">
+                        <button class="btn btn-sm btn-edit"
+                            onclick="abrirModalEditar(
+                                '{{ lead.id }}',
+                                '{{ lead.nombre }}',
+                                '{{ lead.apellidos }}',
+                                '{{ lead.email }}',
+                                '{{ lead.telefono }}',
+                                '{{ lead.direccion }}'
+                            )">
+                            ✏️
+                        </button>
+                        <button onclick="eliminarLead('{{ lead.id }}', this.closest('tr'))" class="btn btn-sm btn-delete">🗑️</button>
+
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- MODAL EDITAR -->
+<div class="modal fade" id="editModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content p-4" style="background:#020617;border-radius:14px;">
+      <h5 class="mb-3">Editar Lead</h5>
+
+      <input type="hidden" id="edit-id">
+
+      <input class="form-control mb-2" id="edit-nombre" placeholder="Nombre">
+      <input class="form-control mb-2" id="edit-apellidos" placeholder="Apellidos">
+      <input class="form-control mb-2" id="edit-email" placeholder="Email">
+      <input class="form-control mb-2" id="edit-telefono" placeholder="Teléfono">
+      <input class="form-control mb-3" id="edit-direccion" placeholder="Dirección">
+
+      <button class="btn btn-primary w-100" onclick="guardarCambios()">
+        Guardar cambios
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL CONFIRMAR ELIMINAR -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content p-4" style="background: linear-gradient(180deg,#020617,#020617); border-radius:16px; border:1px solid rgba(148,163,184,.15);">
+      <h5 class="mb-3">Confirmar eliminación</h5>
+      <p>¿Estás seguro de que quieres eliminar este lead? Esta acción no se puede deshacer.</p>
+      <div class="d-flex justify-content-end mt-3 gap-2">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" id="confirmDeleteBtn" class="btn btn-delete">Eliminar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+const modal = new bootstrap.Modal(document.getElementById("editModal"))
+
+function abrirModalEditar(id,n,a,e,t,d){
+    document.getElementById("edit-id").value = id
+    document.getElementById("edit-nombre").value = n
+    document.getElementById("edit-apellidos").value = a
+    document.getElementById("edit-email").value = e
+    document.getElementById("edit-telefono").value = t
+    document.getElementById("edit-direccion").value = d
+    modal.show()
+}
+
+function guardarCambios(){
+    const id = document.getElementById("edit-id").value
+
+    fetch(`/bot/api/leads/${id}/edit/`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": "{{ csrf_token }}"
+        },
+        body: JSON.stringify({
+            nombre: document.getElementById("edit-nombre").value,
+            apellidos: document.getElementById("edit-apellidos").value,
+            email: document.getElementById("edit-email").value,
+            telefono: document.getElementById("edit-telefono").value,
+            direccion: document.getElementById("edit-direccion").value
+        })
+    })
+    .then(res => {
+        if (!res.ok) throw new Error("Error al guardar")
+        mostrarToast("✅ Cambios guardados correctamente")
+        modal.hide()
+
+        setTimeout(() => {
+            location.reload()
+        }, 1300)
+    })
+    .catch(() => {
+        mostrarToast("❌ Error al guardar los cambios", true)
+    })
+}
+
+
+function eliminarLead(id, row) {
+    const deleteModalEl = document.getElementById("deleteModal")
+    const deleteModal = new bootstrap.Modal(deleteModalEl)
+
+    // Abrimos modal
+    deleteModal.show()
+
+    // Creamos listener **único para este clic**
+    function confirmar() {
+        fetch(`/bot/api/leads/${id}/delete/`, {
+            method: "DELETE",
+            headers: { "X-CSRFToken": "{{ csrf_token }}" }
+        })
+        .then(res => {
+            if (!res.ok) throw new Error("Error al eliminar")
+
+            // Animación de fade out de la fila
+            row.style.transition = "all 0.5s ease"
+            row.style.opacity = 0
+            row.style.transform = "translateX(-20px)"
+            setTimeout(() => row.remove(), 500)
+
+            // Actualizar el total de leads
+            const totalLeadsEl = document.querySelector(".metric")
+            let total = parseInt(totalLeadsEl.innerText)
+            totalLeadsEl.innerText = total - 1
+
+            mostrarToast("🗑️ Lead eliminado correctamente")
+        })
+        .catch(() => mostrarToast("❌ Error al eliminar el lead", true))
+        .finally(() => {
+            // Cerramos modal
+            deleteModal.hide()
+            // Quitamos listener para evitar duplicados
+            confirmBtn.removeEventListener("click", confirmar)
+        })
+    }
+
+    const confirmBtn = deleteModalEl.querySelector("#confirmDeleteBtn")
+    confirmBtn.addEventListener("click", confirmar)
+}
+
+
+
+function mostrarToast(mensaje, error = false) {
+    const toast = document.createElement("div")
+    toast.className = `toast-custom ${error ? "error" : ""}`
+    toast.innerText = mensaje
+
+    document.body.appendChild(toast)
+
+    setTimeout(() => toast.classList.add("show"), 50)
+    setTimeout(() => {
+        toast.classList.remove("show")
+        setTimeout(() => toast.remove(), 300)
+    }, 3000)
+}
+
+</script>
+</body>
+</html>
